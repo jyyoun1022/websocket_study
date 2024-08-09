@@ -1,0 +1,16 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  logging:
+    level:
+      org.apache.http: DEBUG
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3355/tuning?useSSL=false&serverTimezone=UTC
+    username: root
+    password: yjy^^46232891
