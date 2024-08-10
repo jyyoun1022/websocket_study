@@ -16,15 +16,14 @@ public class RedisConfig {
 
     // Redis Channel(Topic)으로 부터 메시지를 받고, 주입된 리스터에게 비동기적으로 dispatch하는 컨테이너
     // 발행자와 구독자 간의 메시지 전달을 위한 논리적 채널
-    @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory,
-                                                                       MessageListenerAdapter listenerAdapter,
-                                                                       ChannelTopic channelTopic) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory);
-        container.addMessageListener(listenerAdapter, channelTopic);
-        return container;
-    }
+//    @Bean
+//    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory,
+//                                                                       ChannelTopic channelTopic) {
+//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+//        container.setConnectionFactory(redisConnectionFactory);
+//        container.addMessageListener(listenerAdapter, channelTopic);
+//        return container;
+//    }
 
     // Redis 서버에는 bytes 코드만이 저장되므로 key와 value에 Serializer를 설정
     @Bean
@@ -33,6 +32,8 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+
+        return redisTemplate;
     }
     //  Topic 공유를 위해 Channel Topic을 빈으로 등록해 단일화 시켜준다.
     @Bean
