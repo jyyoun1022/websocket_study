@@ -46,10 +46,42 @@
 4. Client Credentials Grant
 > 웹이나 앱에서는 **Authorization Code Grant** 방식이 가장 많이 사용한다.
 
-<img width="794" alt="스크린샷 2024-08-17 오후 8 35 10" src="https://github.com/user-attachments/assets/a00144d3-cd6c-4e9b-8f4c-db97b5a01b8a">
 
 ### Authorization Code Grant
-- OAu
+- OAuth 서버에서 client Application에게 바로 access token을 넘겨주는 것이 아니라, Authorization code를 넘겨주고, client Application은 Authorization code를 통해 access token을 발급 받아, access token으로 허가된 리소스 요청을 하는 방식이다.
+- 이렇게 Authorization code를 도입하게 되면 access token 자체는 백엔드에서만 존재하게 되로, 중간에 access token을 탈취당하지 않게 된다.
+
+<img width="794" alt="스크린샷 2024-08-17 오후 8 35 10" src="https://github.com/user-attachments/assets/a00144d3-cd6c-4e9b-8f4c-db97b5a01b8a">
+
+### OAuth + JWT 예시
+>새로운 웹 애플리케이션을 프로트, 백 나눠서 개발하려고한다.
+> 자체 로그인을 구현하기보다 github을 통하여 로그인을 하려고한다.
+> 이때 github 사용자의 이름, 이메일, 프로필 사진정보를 가져와서 회원으로 등록하려고 한다.
+
+#### 인증 방식으로 토큰을 선택한 이유
+- 세션 대신 토큰을 사용하려는 이유는 확장성 떄문이다. 만약 여러 서버가 돌아가는 상황이라면, 각 서버마다 세션 저장소를 두거나, 공통 세션 저장소를 만들어야하는데, 이 또한 비용이기 때문이다. 반면에 토큰은 stateless하기 때문에 확장에 용이하다.
+- 다만, 토큰은 한 번 발급되면 강제로 만료시킬 수 없다는 단점이 있다. 따라서 만료 시간이 짧은 access token과 만료 시간이 긴 refresh token을 나눠서 사용하는 것이다.
+- 토큰은 실제로 로그인을 유지하고 있는 것이 아니라 로그인이 유지된 것 처럼 행동한다.(클라이언트가 access token을 저장해두고, 요청 때마다 보내는 방식) 따라서 만약 access token이 만료된 것이 아니라면, 로그아웃을 했더라도 해당 access token만 가지고 있다면, 로그인 된 상태처럼 행동할 수 있다고 한다.
+
+#### 프론트엔드 역할
+- github OAuth 서버로 github 로그인 요청 후, Authorization code를 발급 받아, 백엔드에 전달
+- 백엔드에서 응답 받은 access token, refresh token 저장해두기
+- 권한이 필요한 요청마다 Authorization Header 에 access token 같이 보내주기
+- access token이 만료되었다면, refresh token을 보내서 갱신하기 (프론트에서 요청 날릴 때 access token이 만료됨을 미리 판별하여 갱신 요청을 보낼 수 있음)
+- refresh token 만료 기간이 7일 이내면, refresh token 재발급 요청
+
+#### 백엔드 역할
+- Authorization code로 github OAuth 서버에 토큰 요청
+- (로그인 할 때 이외에 OAuth 서버와 통신이 필요한 경우 발급 받은 토큰 저장해야함)
+- Access token으로 이름, 이메일, 프로필 URL 정보 요청
+- db에 존재하지 않는 유저라면, 새로 등록. db에 존재하는 유저라면 정보 업데이트
+- 유저의 primary key 값으로 JWT 토큰 (accesss & refresh token)생성. 일반적으로 accesss token은 한시간, refresh token은 2주로 ㅅ ㅐㅇ성
+- refresh token을 DB 또는 Redis에 저장
+- 유저정보, access token, refresh token을 프론트로 전달
+- access token 만료시 refresh token 검증 후, 재발급
+
+<img width="771" alt="스크린샷 2024-08-17 오후 9 02 37" src="https://github.com/user-attachments/assets/614f2a5a-3893-4824-bb05-99f516e3e51e">
+
 
 
 
