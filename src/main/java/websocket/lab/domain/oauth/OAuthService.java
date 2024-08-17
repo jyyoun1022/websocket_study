@@ -15,6 +15,7 @@ import websocket.lab.domain.member.UserProfile;
 import websocket.lab.error.CommonErrorType;
 import websocket.lab.exception.CustomOAuth2AuthenticationException;
 import websocket.lab.type.OAuthAttributes;
+import websocket.lab.type.OAuthProviderType;
 
 import java.util.Collections;
 import java.util.List;
@@ -62,14 +63,22 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
         Member member = null;
         if (!memberList.isEmpty()) {
             member = memberList.get(0);
-            if (member.getEmail().contains(userProfile.getProviderType().name())) {
+            if (!member.getEmail().contains(userProfile.getProviderType().name())) {
                 throw new CustomOAuth2AuthenticationException("SERVER_ERROR", CommonErrorType.REGISTERED_EMAIL_FOR_THE_OTHER);
             }
         } else {
+            userProfile.setEmail(createOAuthStrEmail(email, userProfile.getProviderType()));
             member = userProfile.toMember();
+
         }
         return memberRepository.save(member);
 
+    }
+
+
+
+    private String createOAuthStrEmail(String email, OAuthProviderType providerType) {
+        return providerType.name() + "_" + email;
     }
 
 }

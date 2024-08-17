@@ -27,6 +27,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
     private OAuthProviderType providerType;
 
     public Member update(String name, String email, String imageUrl) {
