@@ -56,7 +56,7 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
     public Member saveOrUpdate(UserProfile userProfile) {
         String email = userProfile.getEmail();
 
-        //  1. 이메일이 등록되어있는지 확인
+        //  1. 이메일이 등록되료어있는지 확인
         List<Member> memberList = memberRepository.findByEmailLike("%_" + email);
 
         //  2. 등록되지 않은 경우 : 저장 / 다른 제공사로 등록되어 있는 경우 에러 발생

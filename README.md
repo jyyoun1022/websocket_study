@@ -82,6 +82,41 @@
 
 <img width="771" alt="스크린샷 2024-08-17 오후 9 02 37" src="https://github.com/user-attachments/assets/614f2a5a-3893-4824-bb05-99f516e3e51e">
 
+### 프로퍼티 객체 생성 - OAuth2ClientProperties
+- 스프링 시큐리티를 사용할 떄, 단지 application.yml 에 client-id, client-secret 등의 정보만 적어주었지만, 신기하게도 설정파일에 적어준 정보를 가지고 로그인이 잘 진행되었다.
+- 이 이유는 스프링 시큐리티는 설정 파일에 적어준 정보들로 애플리케이션 실행 시 **OAuth2ClientProperties** 객체를 생성한다.
+
+<img width="768" alt="스크린샷 2024-08-18 오전 12 57 15" src="https://github.com/user-attachments/assets/0e0cdd65-b452-4b61-9122-93a9cad7e5eb">
+위 와 아래가 비슷한 구조인 것을 볼 수 있다. 설정 파일에 적어준 정보들이 객체로 만들어져 사용되는 것이다.
+<img width="519" alt="스크린샷 2024-08-18 오전 12 57 56" src="https://github.com/user-attachments/assets/3a39d4d4-8fa3-4742-99cb-4e4bd4213e7c">
+
+아래와 같이 **ConfigurationProperties** 어노테이션으로 우리가 설정 파일에 적어준 정보들을 **OAuth2ClientProperties** 필드에 주입하여 객체를 만들어준다.
+
+
+<img width="669" alt="스크린샷 2024-08-18 오전 1 00 30" src="https://github.com/user-attachments/assets/f2470123-87aa-498c-bb76-e5d455b48499">
+
+
+
+### OAuth 로그인 요청 처리 정리
+
+결국 OAuth 로그인 요청이 들어오면 spring security는 아래와 같은 과정을 수행한다.
+1. <code>/oauth2/authorization/{registrationId}</code>로 요청이 오면 <code>OAuth2AuthorizationRequestRedirectFilterOAuth2AuthorizationRequestRedirectFilter</code>에서 registrationId에 따라 아이디 / 비밀번호를 입력할 수 있는 uri로 리다이렉트 시킨다.
+2. 아이디 / 비밀번호를 입력 후 얻을 수 있는 authorization code로 OAuth2LoginAuthenticationFilter에서 OAuth2 server와 소통한다.
+   1. <code>OAuth2LoginAuthenticationProvider</code>를 통해 access token을 얻어온다.
+   2. <code>OAuth2LoginAuthenticationProvider</code>를 통해 access token을 이용해서 유저 정보를 얻어온다.
+
+### 최종 정리
+
+1. 애플리케이션을 실행한다.
+2. application.yml파일을 읽어 <code>OAuth2ClientProperties</code> 생성 한다.
+3. <code>OAuth2ClientPropertiesRegistrationAdapter</code>를 통해 OAuth2ClientProperties에서 각 OAuth2 server 마다 <code>ClientRegistration</code> 생성 한다.
+4. <code>ClientRegistration</code> 리스트를 <code>InMemoryClientRegistrationRepository</code>에 저장 한다.
+5. <code>/oauth2/authorization/{registrationId}</code>로 OAuth2 로그인 요청을 한다.
+6. 요청이 오면 <code>OAuth2AuthorizationRequestRedirectFilter</code>에서 registrationId에 따라 아이디 / 비밀번호를 입력할 수 있는 uri로 리다이렉트 시킨다.
+7. 아이디 / 비밀번호를 입력 후 얻을 수 있는 authorization code로 <code>OAuth2LoginAuthenticationFilter</code>에서 OAuth2 server와 소통한다.
+   1. <code>OAuth2LoginAuthenticationProvider</code>를 통해 access token을 얻어온다.
+   2. <code>OAuth2LoginAuthenticationProvider</code>를 통해 access token을 이용해서 유저 정보를 얻어온다.
+   3. 
 
 
 
