@@ -2,6 +2,7 @@ package websocket.lab.domain.member;
 
 import jakarta.persistence.*;
 import lombok.*;
+import websocket.lab.type.OAuthProviderType;
 import websocket.lab.type.Role;
 
 @Entity
@@ -25,6 +26,8 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private OAuthProviderType providerType;
 
     public Member update(String name, String email, String imageUrl) {
         this.name = name;
