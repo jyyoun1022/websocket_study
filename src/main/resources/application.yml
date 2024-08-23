@@ -11,6 +11,8 @@ spring:
       org.apache.http: DEBUG
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3355/tuning?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/lab?useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: yjy^^46232891
+    password: Yjy^^46232891
+  profiles:
+    include: oauth

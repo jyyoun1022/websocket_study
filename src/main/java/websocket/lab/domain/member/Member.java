@@ -24,11 +24,16 @@ public class Member {
 
     private String imageUrl;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @Enumerated(EnumType.STRING)
-    private OAuthProviderType providerType;
+    @Builder.Default
+    private OAuthProviderType providerType = OAuthProviderType.NONE;
+
+    @Embedded
+    private Address address;
 
     public Member update(String name, String email, String imageUrl) {
         this.name = name;
