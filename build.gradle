@@ -18,6 +18,9 @@ configurations {
 	compileOnly {
 	}
 }
+bootWar {
+	enabled = true
+}
 
 repositories {
 	mavenCentral()
@@ -35,7 +38,9 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-	implementation 'javax.servlet:jstl:1.2'  // 버전을 명시적으로 추가
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	implementation group: 'org.glassfish.web', name: 'jakarta.servlet.jsp.jstl',version:'2.0.0'
+//	implementation 'javax.servlet:jstl:1.2'  // 버전을 명시적으로 추가
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'

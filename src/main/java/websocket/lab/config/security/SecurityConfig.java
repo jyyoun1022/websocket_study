@@ -22,7 +22,7 @@ public class SecurityConfig {
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(request -> request
-                        .anyRequest().authenticated()) // 모든 요청이 인증을 요구하도록 설정
+                        .anyRequest().permitAll()) // 모든 요청이 인증을 요구하도록 설정
         ;
 //                .oauth2Login(oauth2 -> oauth2
 //                        .userInfoEndpoint(userInfo -> userInfo  // 사용자 정보를 가져올 때 설정 담당

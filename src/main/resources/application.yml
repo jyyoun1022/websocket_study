@@ -1,5 +1,7 @@
 server:
   port: 12345
+  servlet:
+    context-path: /
 spring:
   jpa:
     show-sql: true
@@ -19,7 +21,7 @@ spring:
     password: yjy^^46232891
   mvc:
     view:
-      prefix: /WEB-INF/views
+      prefix: /WEB-INF/jsp/
       suffix: .jsp
     static-path-pattern: /**
   profiles:
